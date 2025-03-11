@@ -2,8 +2,10 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 from google.colab import drive
+import google.generativeai as genai
 
-
+genai.configure(api_key="AIzaSyB5-aizL3PkxXwZ-rg46yAHUUuN15u:94sw")
+model = genai.GenerativeModel("gemini-1.5-flash")
 def scraper_portaljob(url):
     try:
         response = requests.get(url)
@@ -90,6 +92,8 @@ url = "https://www.portaljob-madagascar.com/emploi/liste"
 
 # Exécute le scraper
 resultats = scraper_portaljob(url)
+prompt = f"Pouvez vous analyser ce tableau et me dire d'après vous quelle est la compétence qui se répète le plus dans ce tableau{resultats}"
+response = model.generate_content(prompt)
 
 # Affiche les résultats
 if resultats:
@@ -100,3 +104,6 @@ if resultats:
     sauvegarder_en_csv(resultats)
 else:
     print("Aucune offre d'emploi n'a été trouvée ou une erreur s'est produite.")
+
+
+print(response.text)
